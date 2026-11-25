@@ -1,0 +1,195 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>مرشد المواظبة</title>
+<p> اهلا بكم في مرشد المواظبه معكم لتنظيم ومتابعة حضوركم</p>
+
+<style>
+body {
+    font-family: Arial;
+    background-color: #f0f4f8;
+    text-align: center;
+    padding: 20px;
+}
+
+h1 {
+    color: #142b4a;
+}
+
+.container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 500px;
+    margin: auto;
+}
+
+input, select, button {
+    width: 90%;
+    padding: 10px;
+    margin: 8px;
+}
+
+button {
+    background-color: #142b4a;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+th {
+    background-color: #142b4a;
+    color: white;
+}
+
+#results {
+    display: none;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1>مرشد المواظبة</h1>
+
+<p>احسبي نسبة غيابك وتابعي وضعك الأكاديمي</p>
+
+<div class="container">
+
+<h2>إدخال بيانات المادة</h2>
+
+<p>اسم المادة</p>
+<input type="text" id="subject" placeholder="اكتبي اسم المادة">
+
+<p>إجمالي المحاضرات</p>
+<input type="number" id="total" placeholder="عدد المحاضرات" min="1">
+
+<p>عدد الغيابات</p>
+<input type="number" id="absent" placeholder="عدد الغيابات" min="0">
+
+<p>حد الحرمان</p>
+
+<select id="limit">
+    <option value="15">15%</option>
+    <option value="20">20%</option>
+    <option value="25" selected>25%</option>
+</select>
+
+<button onclick="calculate()">احسب النتيجة</button>
+
+<button onclick="resetData()">مسح البيانات</button>
+
+<div id="results">
+
+<h2>عرض النتائج</h2>
+
+<table>
+
+<tr>
+<th>البيان</th>
+<th>النتيجة</th>
+</tr>
+
+<tr>
+<td>اسم المادة</td>
+<td id="rSubject"></td>
+</tr>
+
+<tr>
+<td>نسبة الغياب</td>
+<td id="rPercent"></td>
+</tr>
+
+<tr>
+<td>حد الحرمان</td>
+<td id="rLimit"></td>
+</tr>
+
+<tr>
+<td>عدد المحاضرات المسببة للحرمان</td>
+<td id="rDeprivation"></td>
+</tr>
+
+<tr>
+<td>الغيابات المتبقية</td>
+<td id="rRemaining"></td>
+</tr>
+
+<tr>
+<td>حالة الطالبة</td>
+<td id="rStatus"></td>
+</tr>
+
+</table>
+
+</div>
+</div>
+
+<script>
+
+function calculate() {
+
+    var subject = document.getElementById("subject").value;
+    var total = Number(document.getElementById("total").value);
+    var absent = Number(document.getElementById("absent").value);
+    var limit = Number(document.getElementById("limit").value);
+
+    if (subject == "" || total <= 0 || absent < 0 || absent > total) {
+        alert("تأكدي من إدخال البيانات بشكل صحيح");
+        return;
+    }
+
+    var percent = (absent / total) * 100;
+    var deprivation = Math.ceil(total * limit / 100);
+    var remaining = Math.max(0, deprivation - absent - 1);
+
+    var status;
+
+    if (absent >= deprivation) {
+        status = "وصلت إلى حد الحرمان";
+    } else if (absent == deprivation - 1) {
+        status = "قريبة من الحرمان";
+    } else {
+        status = "آمنة";
+    }
+
+    document.getElementById("rSubject").innerHTML = subject;
+    document.getElementById("rPercent").innerHTML = percent.toFixed(2) + "%";
+    document.getElementById("rLimit").innerHTML = limit + "%";
+    document.getElementById("rDeprivation").innerHTML = deprivation + " محاضرات";
+    document.getElementById("rRemaining").innerHTML = remaining + " محاضرات";
+    document.getElementById("rStatus").innerHTML = status;
+
+    document.getElementById("results").style.display = "block";
+}
+
+function resetData() {
+
+    document.getElementById("subject").value = "";
+    document.getElementById("total").value = "";
+    document.getElementById("absent").value = "";
+    document.getElementById("limit").value = "25";
+    document.getElementById("results").style.display = "none";
+
+}
+
+</script>
+</body>
+</html>
